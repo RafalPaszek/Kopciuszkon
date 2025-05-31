@@ -2,55 +2,52 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Przepis</title>
-  <link rel="stylesheet" href="style_przepis.css">
+  <title>Szczegóły przepisu</title>
+  <style>
+    body { font-family: Arial; background-color: #f5f5f5; padding: 2rem; }
+    .recipe-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: auto;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+    h1 { margin-bottom: 0.5rem; }
+    ul { margin-top: 0.5rem; }
+    a { display: inline-block; margin-top: 2rem; color: #0077cc; text-decoration: none; }
+  </style>
 </head>
 <body>
-  <div class="recipe" id="recipeContainer">
-    <p>Ładowanie...</p>
+  <div class="recipe-box" id="recipeDetails">
+    <p>Wczytywanie przepisu...</p>
   </div>
 
+  <script src="db.js"></script>
   <script>
-    const recipes = [
-      {
-        name: "Naleśniki",
-        ingredients: ["jajko", "mleko", "mąka"],
-        description: "Pyszne cienkie naleśniki z dżemem.",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Polish_Nale%C5%9Bniki.jpg/800px-Polish_Nale%C5%9Bniki.jpg"
-      },
-      {
-        name: "Omlet",
-        ingredients: ["jajko", "masło", "ser"],
-        description: "Omlet z jajek i sera.",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Omelette_with_cheese.jpg/640px-Omelette_with_cheese.jpg"
-      },
-      {
-        name: "Kanapka",
-        ingredients: ["chleb", "masło", "szynka"],
-        description: "Klasyczna kanapka z szynką.",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Ham_sandwich.png/640px-Ham_sandwich.png"
-      }
-    ];
-
     const params = new URLSearchParams(window.location.search);
-    const recipeName = params.get('name');
-    const recipe = recipes.find(r => r.name === recipeName);
+    const recipeName = decodeURIComponent(params.get('name'));
 
-    const container = document.getElementById("recipeContainer");
+    const container = document.getElementById('recipeDetails');
+    const recipe = recipes.find(r => r.name === recipeName);
 
     if (recipe) {
       container.innerHTML = `
         <h1>${recipe.name}</h1>
         <img src="${recipe.image}" alt="${recipe.name}">
-        <h3>Składniki:</h3>
-        <ul>
-          ${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}
-        </ul>
-        <p>${recipe.description}</p>
-        <p><a href="index.html">← Wróć do wyszukiwarki</a></p>
+        <p><strong>Opis:</strong> ${recipe.description}</p>
+        <p><strong>Składniki:</strong></p>
+        <ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+        <a href="index.html">← Powrót do wyszukiwarki</a>
       `;
     } else {
-      container.innerHTML = "<p>Nie znaleziono przepisu.</p>";
+      container.innerHTML = `<p>Nie znaleziono przepisu: <strong>${recipeName}</strong></p>
+      <a href="index.html">← Powrót do wyszukiwarki</a>`;
     }
   </script>
 </body>
