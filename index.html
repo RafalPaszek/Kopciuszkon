@@ -3,35 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <title>Wyszukiwarka przepisów</title>
-  <link rel="stylesheet" href="style_index.css">
+  <style>
+    body {
+      font-family: 'Lucida Console', Arial, sans-serif;
+      padding: 2rem;
+      background-color: #e6ffe6;
+    }
+
+    .header-box {
+      background: white;
+      border-radius: 5px;
+      padding: 1rem;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      margin-bottom: 2rem;
+      border: 2px solid #333;
+    }
+
+    input {
+      padding: 0.5rem;
+      width: 300px;
+    }
+
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.2s;
+    }
+
+    .result:hover {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .result img {
+      max-width: 150px;
+      border-radius: 5px;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .no-results {
+      margin-top: 1rem;
+      font-style: italic;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-  <h1 class="header-box">Wyszukiwarka przepisów</h1>
-  <input type="text" id="searchInput" placeholder="Wpisz składnik..." onkeyup="searchRecipes()">
+  <div class="header-box">
+    <h1>Wyszukiwarka przepisów</h1>
+    <input type="text" id="searchInput" placeholder="Wpisz składnik..." onkeyup="searchRecipes()">
+  </div>
+
   <div id="results"></div>
 
+  <script src="db.js"></script>
   <script>
-    const recipes = [
-      {
-        name: "Naleśniki",
-        ingredients: ["jajko", "mleko", "mąka"],
-        description: "Pyszne cienkie naleśniki z dżemem.",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Polish_Nale%C5%9Bniki.jpg/800px-Polish_Nale%C5%9Bniki.jpg"
-      },
-      {
-        name: "Omlet",
-        ingredients: ["jajko", "masło", "ser"],
-        description: "Omlet z jajek i sera.",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Omelette_with_cheese.jpg/640px-Omelette_with_cheese.jpg"
-      },
-      {
-        name: "Kanapka",
-        ingredients: ["chleb", "masło", "szynka"],
-        description: "Klasyczna kanapka z szynką.",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Ham_sandwich.png/640px-Ham_sandwich.png"
-      }
-    ];
-
     function searchRecipes() {
       const input = document.getElementById("searchInput").value.toLowerCase();
       const results = document.getElementById("results");
@@ -40,6 +70,11 @@
       const filtered = recipes.filter(recipe =>
         recipe.ingredients.some(ing => ing.toLowerCase().includes(input))
       );
+
+      if (filtered.length === 0) {
+        results.innerHTML = '<p class="no-results">Brak wyników dla podanego składnika.</p>';
+        return;
+      }
 
       filtered.forEach(recipe => {
         const div = document.createElement("div");
@@ -54,6 +89,12 @@
         results.appendChild(div);
       });
     }
+
+    // Pokaż wszystko przy pierwszym załadowaniu
+    window.onload = () => {
+      document.getElementById("searchInput").value = "";
+      searchRecipes();
+    };
   </script>
 </body>
 </html>
