@@ -1,11 +1,64 @@
-div.innerHTML = `
-  <a href="przepis.html?name=${encodeURIComponent(recipe.name)}" style="text-decoration:none; color:inherit;">
-    <img src="${recipe.image}" alt="${recipe.name}">
-    <div>
-      <h3>${recipe.name}</h3>
-      <p>${recipe.description}</p>
-    </div>
-  </a>
-`;
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Wyszukiwarka przepisów</title>
+  <style>
+    body { font-family: Arial; padding: 2rem; background-color: #f0f0f0; }
+    input { padding: 0.5rem; width: 300px; }
+    .result { margin-top: 1rem; padding: 1rem; background: white; border-radius: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    .result img { max-width: 150px; border-radius: 5px; display: block; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Wyszukiwarka przepisów</h1>
+  <input type="text" id="searchInput" placeholder="Wpisz składnik..." onkeyup="searchRecipes()">
+  <div id="results"></div>
 
+  <script>
+    const recipes = [
+      {
+        name: "Naleśniki",
+        ingredients: ["jajko", "mleko", "mąka"],
+        description: "Pyszne cienkie naleśniki z dżemem.",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Polish_Nale%C5%9Bniki.jpg/800px-Polish_Nale%C5%9Bniki.jpg"
+      },
+      {
+        name: "Omlet",
+        ingredients: ["jajko", "masło", "ser"],
+        description: "Omlet z jajek i sera.",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Omelette_with_cheese.jpg/640px-Omelette_with_cheese.jpg"
+      },
+      {
+        name: "Kanapka",
+        ingredients: ["chleb", "masło", "szynka"],
+        description: "Klasyczna kanapka z szynką.",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Ham_sandwich.png/640px-Ham_sandwich.png"
+      }
+    ];
 
+    function searchRecipes() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+
+      const filtered = recipes.filter(recipe =>
+        recipe.ingredients.some(ing => ing.toLowerCase().includes(input))
+      );
+
+      filtered.forEach(recipe => {
+        const div = document.createElement("div");
+        div.className = "result";
+        div.innerHTML = `
+          <a href="przepis.html?name=${encodeURIComponent(recipe.name)}">
+            <img src="${recipe.image}" alt="${recipe.name}">
+            <strong>${recipe.name}</strong><br>
+            ${recipe.description}
+          </a>
+        `;
+        results.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
